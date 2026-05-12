@@ -1,4 +1,5 @@
 package com.sanosysalvos.gateway.filter;
+
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,24 +17,22 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 
 @Component
-public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAuthenticationFilter.Config> {
+public class JwtAuthenticationFilterFactory extends AbstractGatewayFilterFactory<JwtAuthenticationFilterFactory.Config> {
 
     @Value("${jwt.secret:sanosysalvos1234}")
     private String jwtSecret;
 
-    public JwtAuthenticationFilter() {
+    public JwtAuthenticationFilterFactory() {
         super(Config.class);
     }
 
     public static class Config {
-
     }
 
     @Override
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
             ServerHttpRequest request = exchange.getRequest();
-
             if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                 return onError(exchange, "Falta la cabecera Authorization", HttpStatus.UNAUTHORIZED);
             }
