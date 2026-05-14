@@ -16,13 +16,13 @@ import reactor.core.publisher.Mono;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 
-@Component
-public class JwtAuthenticationFilterFactory extends AbstractGatewayFilterFactory<JwtAuthenticationFilterFactory.Config> {
+@Component("JwtAuthenticationFilter")
+public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAuthenticationFilter.Config> {
 
     @Value("${jwt.secret:sanosysalvos1234}")
     private String jwtSecret;
 
-    public JwtAuthenticationFilterFactory() {
+    public JwtAuthenticationFilter() {
         super(Config.class);
     }
 
