@@ -8,7 +8,7 @@ API Gateway - enruta peticiones HTTP a los microservicios correspondientes
 
 ## Base de datos
 
-N/A
+Sin base de datos propia - enruta peticiones a microservicios
 
 ## Endpoints disponibles
 
