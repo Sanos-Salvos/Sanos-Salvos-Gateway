@@ -1,36 +1,31 @@
-﻿# 🏥 Sanos-Salvos-Gateway
+﻿# Sanos-Salvos-Gateway
 
-API Gateway principal - enruta requests a microservicios
+API Gateway - enruta peticiones HTTP a los microservicios correspondientes
 
 ## Puerto
-\\\
+
 8080
-\\\
 
 ## Base de datos
-\\\
+
 N/A
-\\\
 
-## Endpoints
-\\\
-Enruta /api/** a servicios correspondientes
-\\\
+## Endpoints disponibles
 
-## Ejecución
+Enruta todas las peticiones /api/* al microservicio correspondiente
 
-### Docker
-\\\ash
+## Ejecucion con Docker
+
 docker-compose up --build
-\\\
 
-### Manual
-\\\ash
+## Ejecucion manual
+
 mvn spring-boot:run
-\\\
 
-## Stack
+## Tecnologias
+
 - Java 21
 - Spring Boot 3.2
+- Spring Security + JWT
 - PostgreSQL
 - Docker
