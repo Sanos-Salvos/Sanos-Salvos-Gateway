@@ -1,0 +1,208 @@
+version: '3.8'
+
+services:
+  # ==================== BASE DE DATOS ====================
+  postgres:
+    image: postgres:16-alpine
+    container_name: sanos-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "1234"
+      POSTGRES_MULTIPLE_DATABASES: auth_db,mascotas_db,usuarios_db,organizaciones_db,coincidencias_db,geolocalizacion_db,notificaciones_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ==================== MICROSERVICIOS ====================
+  auth:
+    build: ../Sanos-Salvos-Auth
+    container_name: sanos-auth
+    ports:
+      - "8088:8088"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/auth_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: "1234"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  register:
+    build: ../Sanos-Salvos-Register
+    container_name: sanos-register
+    ports:
+      - "8091:8091"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/auth_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: "1234"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  usuarios:
+    build: ../Sanos-Salvos-Usuarios
+    container_name: sanos-usuarios
+    ports:
+      - "8087:8087"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/usuarios_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: "1234"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  organizaciones:
+    build: ../Sanos-Salvos-Organizaciones/organizaciones
+    container_name: sanos-organizaciones
+    ports:
+      - "8081:8081"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/organizaciones_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: "1234"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  pet:
+    build: ../Sanos-Salvos-Pet/pet
+    container_name: sanos-pet
+    ports:
+      - "8082:8082"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/mascotas_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: "1234"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  coincidencias:
+    build: ../Sanos-Salvos-Coincidencias/coincidencias/coincidencias
+    container_name: sanos-coincidencias
+    ports:
+      - "8084:8084"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/coincidencias_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: "1234"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  geolocalizacion:
+    build: ../Sanos-Salvos-Geolocalizacion
+    container_name: sanos-geolocalizacion
+    ports:
+      - "8085:8085"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/geolocalizacion_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: "1234"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  notificaciones:
+    build: ../Sanos-Salvos-Notificaciones
+    container_name: sanos-notificaciones
+    ports:
+      - "8086:8086"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/notificaciones_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: "1234"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  gateway:
+    build: ./gateway/gateway
+    container_name: sanos-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      BFF_HOST: bff
+      AUTH_HOST: auth
+      LOGIN_HOST: auth
+      MICROSERVICIO_AUTH_URL: http://auth:8088
+      MICROSERVICIO_REGISTER_URL: http://register:8091
+      MICROSERVICIO_ORGANIZACIONES_URL: http://organizaciones:8081
+      MICROSERVICIO_PET_URL: http://pet:8082
+      MICROSERVICIO_COINCIDENCIAS_URL: http://coincidencias:8084
+      MICROSERVICIO_GEOLOCALIZACION_URL: http://geolocalizacion:8085
+      MICROSERVICIO_USUARIOS_URL: http://usuarios:8087
+      MICROSERVICIO_NOTIFICACIONES_URL: http://notificaciones:8086
+    depends_on:
+      - auth
+      - register
+      - pet
+      - organizaciones
+      - coincidencias
+      - geolocalizacion
+      - usuarios
+      - notificaciones
+
+  bff:
+    build: ../Sanos-Salvos-BFF/bff/bff
+    container_name: sanos-bff
+    ports:
+      - "8083:8083"
+    environment:
+      MICROSERVICIO_AUTH_URL: http://auth:8088
+      MICROSERVICIO_REGISTER_URL: http://register:8091
+      MICROSERVICIO_ORGANIZACIONES_URL: http://organizaciones:8081
+      MICROSERVICIO_PET_URL: http://pet:8082
+      MICROSERVICIO_COINCIDENCIAS_URL: http://coincidencias:8084
+      MICROSERVICIO_GEOLOCALIZACION_URL: http://geolocalizacion:8085
+      MICROSERVICIO_USUARIOS_URL: http://usuarios:8087
+      MICROSERVICIO_NOTIFICACIONES_URL: http://notificaciones:8086
+      PET_HOST: pet
+    depends_on:
+      - auth
+      - register
+      - pet
+      - organizaciones
+      - coincidencias
+      - geolocalizacion
+      - usuarios
+      - notificaciones
+
+  # ==================== FRONTEND ====================
+  frontend:
+    build: ../Sanos-Salvos-Front
+    container_name: sanos-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      REACT_APP_BFF_URL: http://bff:8083
+    depends_on:
+      - bff
+
+volumes:
+  postgres_data:
