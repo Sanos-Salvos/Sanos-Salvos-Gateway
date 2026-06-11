@@ -66,17 +66,17 @@ Sanos-y-Salvos/
 ### 1. Clonar todos los repos
 
 ```bash
-git clone https://github.com/TU_ORG/Sanos-Salvos-Auth.git
-git clone https://github.com/TU_ORG/Sanos-Salvos-BFF.git
-git clone https://github.com/TU_ORG/Sanos-Salvos-Coincidencias.git
-git clone https://github.com/TU_ORG/Sanos-Salvos-Front.git
-git clone https://github.com/TU_ORG/Sanos-Salvos-Gateway.git
-git clone https://github.com/TU_ORG/Sanos-Salvos-Geolocalizacion.git
-git clone https://github.com/TU_ORG/Sanos-Salvos-Notificaciones.git
-git clone https://github.com/TU_ORG/Sanos-Salvos-Organizaciones.git
-git clone https://github.com/TU_ORG/Sanos-Salvos-Pet.git
-git clone https://github.com/TU_ORG/Sanos-Salvos-Register.git
-git clone https://github.com/TU_ORG/Sanos-Salvos-Usuarios.git
+git clone https://github.com/Sanos-Salvos/Sanos-Salvos-Auth.git
+git clone https://github.com/Sanos-Salvos/Sanos-Salvos-BFF.git
+git clone https://github.com/Sanos-Salvos/Sanos-Salvos-Coincidencias.git
+git clone https://github.com/Sanos-Salvos/Sanos-Salvos-Front.git
+git clone https://github.com/Sanos-Salvos/Sanos-Salvos-Gateway.git
+git clone https://github.com/Sanos-Salvos/Sanos-Salvos-Geolocalizacion.git
+git clone https://github.com/Sanos-Salvos/Sanos-Salvos-Notificaciones.git
+git clone https://github.com/Sanos-Salvos/Sanos-Salvos-Organizaciones.git
+git clone https://github.com/Sanos-Salvos/Sanos-Salvos-Pet.git
+git clone https://github.com/Sanos-Salvos/Sanos-Salvos-Register.git
+git clone https://github.com/Sanos-Salvos/Sanos-Salvos-Usuarios.git
 ```
 
 ### 2. Entrar al directorio del Gateway
