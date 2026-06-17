@@ -33,6 +33,12 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAut
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
             ServerHttpRequest request = exchange.getRequest();
+            String path = request.getURI().getPath();
+
+            if (path.contains("/api/auth") || path.contains("/api/login")) {
+                return chain.filter(exchange);
+            }
+
             if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                 return onError(exchange, "Falta la cabecera Authorization", HttpStatus.UNAUTHORIZED);
             }
@@ -52,6 +58,7 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAut
             } catch (Exception e) {
                 return onError(exchange, "Token JWT inválido o expirado", HttpStatus.UNAUTHORIZED);
             }
+
             return chain.filter(exchange);
         };
     }
