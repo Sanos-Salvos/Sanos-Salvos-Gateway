@@ -34,35 +34,6 @@ services:
       postgres:
         condition: service_healthy
 
-  register:
-    build: ../Sanos-Salvos-Register
-    container_name: sanos-register
-    ports:
-      - "8092:8091"
-    environment:
-      DB_HOST: postgres
-      DB_PORT: 5432
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/auth_db
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: "1234"
-    depends_on:
-      postgres:
-        condition: service_healthy
-
-  usuarios:
-    build: ../Sanos-Salvos-Usuarios
-    container_name: sanos-usuarios
-    ports:
-      - "8087:8087"
-    environment:
-      DB_HOST: postgres
-      DB_PORT: 5432
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/usuarios_db
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: "1234"
-    depends_on:
-      postgres:
-        condition: service_healthy
 
   organizaciones:
     build: ../Sanos-Salvos-Organizaciones/organizaciones
